@@ -47,7 +47,7 @@ namespace ZombieRush
             for (int i = 0; i < NUM_ITEMS; i++)
             {
                 items.Add(new Item(rng.Next(0, BOARD_SIZE), rng.Next(0, BOARD_SIZE)));
-                board[items[i].x, items[i].y].tile = " * ";
+                board[items[i].x, items[i].y].tile = " \x1b[33m* \x1b[0m";
                 board[items[i].x, items[i].y].hasItem = true;
             }
 
@@ -55,7 +55,7 @@ namespace ZombieRush
             for (int i = 0; i < NUM_MONSTERS; i++)
             {
                 monsters.Add(new Monster(this));
-                board[monsters[i].x, monsters[i].y].tile = " M ";
+                board[monsters[i].x, monsters[i].y].tile = " \x1b[31mM\x1b[0m ";
             }
         }
 
@@ -100,10 +100,10 @@ namespace ZombieRush
             for (int i=0; i < monsters.Count; i++)
             {
                 if (board[monsters[i].previousX, monsters[i].previousY].hasItem)
-                    board[monsters[i].previousX, monsters[i].previousY].tile = " * ";
+                    board[monsters[i].previousX, monsters[i].previousY].tile = " \x1b[33m*\x1b[0m ";
                 else
                     board[monsters[i].previousX, monsters[i].previousY].tile = "   ";
-                board[monsters[i].x, monsters[i].y].tile = " M ";
+                board[monsters[i].x, monsters[i].y].tile = " \x1b[31mM\x1b[0m ";
             }
 
             // Check for collisions

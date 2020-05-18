@@ -20,7 +20,7 @@ namespace ZombieRush
         public int score = 0;
         public int moves = 0;
 
-        public string tile = " P ";
+        public string tile = " \x1b[32mP\x1b[0m ";
 
         public bool dead = false;
         public bool gameOver = false;
@@ -55,28 +55,28 @@ namespace ZombieRush
                 {
                     if (x != 0)
                         x -= 1;
-                    tile = " ^ ";
+                    tile = " \x1b[32m^\x1b[0m ";
                 }
 
                 if (keypress.KeyChar == 's')
                 {
                     if (x != upperMapBound - 1)
                         x += 1;
-                    tile = " V ";
+                    tile = " \x1b[32mV\x1b[0m ";
                 }
 
                 if (keypress.KeyChar == 'a')
                 {
                     if (y != 0)
                         y -= 1;
-                    tile = " < ";
+                    tile = " \x1b[32m<\x1b[0m ";
                 }
 
                 if (keypress.KeyChar == 'd')
                 {
                     if (y != upperMapBound - 1)
                         y += 1;
-                    tile = " > ";
+                    tile = " \x1b[32m>\x1b[0m ";
                 }
 
                 if (x != previousX || y != previousY)
@@ -84,7 +84,7 @@ namespace ZombieRush
                     moves++;
                 }
 
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
         }
 
