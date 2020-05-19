@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace ZombieRush
 {
-    class Player
+    public class Player
     {
 
         public int x;
@@ -13,6 +13,7 @@ namespace ZombieRush
         public int previousX;
         public int previousY;
 
+        Map map;
         public int upperMapBound;
 
         ConsoleKeyInfo keypress;
@@ -30,9 +31,10 @@ namespace ZombieRush
             gameOver = gamO;
         }
 
-        public void Spawn(int BOARD_SIZE)
+        public void Spawn(Map _map)
         {
-            upperMapBound = BOARD_SIZE;
+            map = _map;
+            upperMapBound = _map.BoardSize;
             Random rng = new Random();
             x = rng.Next(0, upperMapBound);
             y = rng.Next(0, upperMapBound);
@@ -55,28 +57,48 @@ namespace ZombieRush
                 if (keypress.KeyChar == 'w')
                 {
                     if (x != 0)
+                    {
+                        if (map.board[x - 1, y].HasWall)
+                            continue;
+
                         x -= 1;
+                    }
                     tile = "\x1b[32m ^ \x1b[0m";
                 }
 
                 if (keypress.KeyChar == 's')
                 {
                     if (x != upperMapBound - 1)
+                    {
+                        if (map.board[x + 1, y].HasWall)
+                            continue;
+
                         x += 1;
+                    }
                     tile = "\x1b[32m V \x1b[0m";
                 }
 
                 if (keypress.KeyChar == 'a')
                 {
                     if (y != 0)
+                    {
+                        if (map.board[x, y - 1].HasWall)
+                            continue;
+
                         y -= 1;
+                    }
                     tile = "\x1b[32m < \x1b[0m";
                 }
 
                 if (keypress.KeyChar == 'd')
                 {
                     if (y != upperMapBound - 1)
+                    {
+                        if (map.board[x, y + 1].HasWall)
+                            continue;
+
                         y += 1;
+                    }
                     tile = "\x1b[32m > \x1b[0m";
                 }
 
@@ -88,6 +110,5 @@ namespace ZombieRush
                 Thread.Sleep(10);
             }
         }
-
     }
 }

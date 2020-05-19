@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace ZombieRush
 {
-    class Timer
+    public class Timer
     {
 
         /// <summary>

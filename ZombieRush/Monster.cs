@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZombieRush
 {
-    class Monster
+    public class Monster
     {
         public string tile = "\x1b[31m M \x1b[0m";
         public int x;
@@ -12,51 +12,104 @@ namespace ZombieRush
         public int previousX;
         public int previousY;
 
+        Map map;
         public int upperMapBound;
 
-        public Monster(int BOARD_SIZE)
+        public Monster(Map _map)
         {
-            upperMapBound = BOARD_SIZE;
-            Random rng = new Random();
-            x = rng.Next(0, upperMapBound);
-            y = rng.Next(0, upperMapBound);
+            map = _map;
+            upperMapBound = map.BoardSize;
+            Spawn();
+        }
+
+        public void Spawn()
+        {
+            Random rng = new Random();       
+            while (true)
+            {
+                x = rng.Next(0, upperMapBound);
+                y = rng.Next(0, upperMapBound);
+                if (map.board[x, y].HasWall == false) break;
+            }
+
             previousX = x;
             previousY = y;
         }
 
         public void Move()
         {
-            Random rng = new Random();
-            int moveDirection = rng.Next(0, 4);
-
-            // Grab players current position and save as previous position
-            previousX = x;
-            previousY = y;
-
-            // Update players new position after keypress
-            if (moveDirection == 0)
+            while (true)
             {
-                if (x != 0)
-                    x -= 1;
-            }
+                Random rng = new Random();
+                int moveDirection = rng.Next(0, 4);
 
-            if (moveDirection == 1)
-            {
-                if (x != upperMapBound - 1)
-                    x += 1;
-            }
+                // Grab players current position and save as previous position
+                previousX = x;
+                previousY = y;
 
-            if (moveDirection == 2)
-            {
-                if (y != 0)
-                    y -= 1;
-            }
+                // Update players new position after keypress
+                if (moveDirection == 0)
+                {
+                    if (x != 0)
+                    {
+                        if (map.board[x - 1, y].HasWall)
+                            continue;
 
-            if (moveDirection == 3)
-            {
-                if (y != upperMapBound - 1)
-                    y += 1;
+                        if (map.board[x - 1, y].HasMonster)
+                            break;
+
+                        x -= 1;
+                        break;
+                    }
+                }
+
+                if (moveDirection == 1)
+                {
+                    if (x != upperMapBound - 1)
+                    {
+                        if (map.board[x + 1, y].HasWall)
+                            continue;
+
+                        if (map.board[x + 1, y].HasMonster)
+                            break;
+
+                        x += 1;
+                        break;
+                    }
+                }
+
+                if (moveDirection == 2)
+                {
+                    if (y != 0)
+                    {
+                        if (map.board[x, y - 1].HasWall)
+                            continue;
+
+                        if (map.board[x, y - 1].HasMonster)
+                            break;
+
+                        y -= 1;
+                        break;
+                    }
+                }
+
+                if (moveDirection == 3)
+                {
+                    if (y != upperMapBound - 1)
+                    {
+                        if (map.board[x, y + 1].HasWall)
+                            continue;
+
+                        if (map.board[x, y + 1].HasMonster)
+                            break;
+
+                        y += 1;
+                        break;
+                    }
+                }
             }
+            map.board[previousX, previousY].HasMonster = false;
+            map.board[x, y].HasMonster = true;
         }
     }
 }
