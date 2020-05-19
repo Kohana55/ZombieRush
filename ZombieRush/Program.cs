@@ -24,25 +24,27 @@ namespace ZombieRush
                 MonsterControl monsterControl = new MonsterControl(monsters, gameOver);
                 Thread monsterControlThread = new Thread(monsterControl.Run);
                 List<Item> items = new List<Item>();
+                Timer timer = new Timer();
+                Thread timerThread = new Thread(timer.Run);
 
                 // Create a map and populate it with our player
                 // monsters and items
-                Map map = new Map(player, monsters, items, gameOver);
-                
+                Map map = new Map(player, monsters, items, timer, gameOver);               
                 map.Update();
 
                 // Initial drawing of gamescene
-                cgm.UpdateScene(player, map, scoreboard);
+                cgm.UpdateScene(player, map, scoreboard, timer);
                 cgm.DrawScene();
 
                 monsterControlThread.Start();
                 playerThread.Start();
+                timerThread.Start();
                 // ---GAME LOOP---                      
                 while (true)
                 {
                     map.Update();
 
-                    if (player.dead == true)
+                    if (player.dead == true || timer.TimeRemaining == 0)
                     {
                         monsterControl.gameOver = true;
                         player.gameOver = true;
@@ -52,12 +54,12 @@ namespace ZombieRush
                     // Items respawn
                     if (items.Count == 0)
                     {
-                        map.RespawnItems();
+                        map.SpawnItems();
                         map.Update();
                     }
 
                     // Update and Draw the scene
-                    cgm.UpdateScene(player, map, scoreboard);
+                    cgm.UpdateScene(player, map, scoreboard, timer);
                     cgm.DrawScene();
 
                     // Just so we don't hammer the CPU
@@ -65,7 +67,7 @@ namespace ZombieRush
                 } // End GAME LOOP
 
                 // Update and Draw scene so player can see where collision happened
-                cgm.UpdateScene(player, map, scoreboard);
+                cgm.UpdateScene(player, map, scoreboard, timer);
                 cgm.DrawScene();
 
                 Console.WriteLine("\n!!!!GOOD EFFORT!!!!");
@@ -77,7 +79,7 @@ namespace ZombieRush
 
                 // Update and Draw screen once more to display
                 // possible leaderboard changes
-                cgm.UpdateScene(player, map, scoreboard);
+                cgm.UpdateScene(player, map, scoreboard, timer);
                 cgm.DrawScene();
 
                 // Check if user wishes to quit the game

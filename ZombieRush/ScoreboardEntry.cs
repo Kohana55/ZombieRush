@@ -8,6 +8,5 @@ namespace ZombieRush
     {
         public string name = "";
         public int score = 0;
-        public int turns = 0;
     }
 }

@@ -11,7 +11,7 @@ namespace ZombieRush
                 return BOARD_SIZE;
             }
         }
-        private const int BOARD_SIZE = 16;
+        private const int BOARD_SIZE = 28;
         private const int NUM_ITEMS = 20;
         private const int NUM_MONSTERS = 10;
         public bool gameOver = false;
@@ -20,6 +20,7 @@ namespace ZombieRush
         Player player;
         List<Monster> monsters = new List<Monster>();
         public List<Item> items = new List<Item>();
+        Timer timer;
         Random rng = new Random();
 
         /// <summary>
@@ -27,47 +28,27 @@ namespace ZombieRush
         /// </summary>
         /// <param name="_player"></param>
         /// <param name="_monsters"></param>
-        public Map(Player _player, List<Monster> _monsters, List<Item> _items, bool gamO)
+        /// <param name="_items"></param>
+        /// <param name="gamO"></param>
+        public Map(Player _player, List<Monster> _monsters, List<Item> _items,Timer _timer, bool gamO)
         {
             gameOver = gamO;
+            timer = _timer;
 
             // Construct the Cells of each board location
             GenerateBoard();
 
             // Setup Player on the map
             player = _player;
-            player.upperMapBound = BOARD_SIZE;
-            player.Spawn();
-
-            // Setup Monsters on the map
-            monsters = _monsters;
+            player.Spawn(BOARD_SIZE);
 
             // Create item list and add to map
             items = _items;
-            for (int i = 0; i < NUM_ITEMS; i++)
-            {
-                items.Add(new Item(rng.Next(0, BOARD_SIZE), rng.Next(0, BOARD_SIZE)));
-                board[items[i].x, items[i].y].tile = " \x1b[33m* \x1b[0m";
-                board[items[i].x, items[i].y].hasItem = true;
-            }
+            SpawnItems();
 
             // Create monster list and add to map
-            for (int i = 0; i < NUM_MONSTERS; i++)
-            {
-                monsters.Add(new Monster(this));
-                board[monsters[i].x, monsters[i].y].tile = " \x1b[31mM\x1b[0m ";
-            }
-        }
-
-        public void RespawnItems()
-        {
-            items.Clear();
-            for (int i = 0; i < NUM_ITEMS; i++)
-            {
-                items.Add(new Item(rng.Next(0, BOARD_SIZE), rng.Next(0, BOARD_SIZE)));
-                board[items[i].x, items[i].y].tile = items[i].tile;
-                board[items[i].x, items[i].y].hasItem = true;
-            }
+            monsters = _monsters;
+            SpawnMonsters();
         }
 
         /// <summary>
@@ -79,11 +60,34 @@ namespace ZombieRush
             {
                 for (int j = 0; j < BOARD_SIZE; j++)
                 {
-                    board[i, j] = new Cell
-                    {
-                        tile = "   "
-                    };
+                    board[i, j] = new Cell();
                 }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void SpawnMonsters()
+        {
+            for (int i = 0; i < NUM_MONSTERS; i++)
+            {
+                monsters.Add(new Monster(BOARD_SIZE));
+                board[monsters[i].x, monsters[i].y].HasMonster = true;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void SpawnItems()
+        {
+            items.Clear();
+            for (int i = 0; i < NUM_ITEMS; i++)
+            {
+                items.Add(new Item(rng.Next(0, BOARD_SIZE), rng.Next(0, BOARD_SIZE)));
+                board[items[i].x, items[i].y].tile = items[i].tile;
+                board[items[i].x, items[i].y].HasItem = true;
             }
         }
 
@@ -96,14 +100,11 @@ namespace ZombieRush
             board[player.previousX, player.previousY].tile = "   ";
             board[player.x, player.y].tile = player.tile;
 
-            // Update Monsters
-            for (int i=0; i < monsters.Count; i++)
+            //// Update Monsters
+            for (int i = 0; i < monsters.Count; i++)
             {
-                if (board[monsters[i].previousX, monsters[i].previousY].hasItem)
-                    board[monsters[i].previousX, monsters[i].previousY].tile = " \x1b[33m*\x1b[0m ";
-                else
-                    board[monsters[i].previousX, monsters[i].previousY].tile = "   ";
-                board[monsters[i].x, monsters[i].y].tile = " \x1b[31mM\x1b[0m ";
+                board[monsters[i].previousX, monsters[i].previousY].HasMonster = false;
+                board[monsters[i].x, monsters[i].y].HasMonster = true;
             }
 
             // Check for collisions
@@ -127,9 +128,10 @@ namespace ZombieRush
                 if (player.x == items[i].x && player.y == items[i].y)
                 {
                     player.score++;
-                    board[items[i].x, items[i].y].hasItem = false;
+                    board[items[i].x, items[i].y].HasItem = false;
                     toBeDeleted = i;
                     collisionDetected = true;
+                    timer.TimeRemaining += 1;
                     gameOver = true;
                 }
             }

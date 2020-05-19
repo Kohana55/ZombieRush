@@ -35,10 +35,10 @@ namespace ZombieRush
         {
             var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
             GetConsoleMode(iStdOut, out uint outConsoleMode);
-
-
             outConsoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
             SetConsoleMode(iStdOut, outConsoleMode);
+
+            Console.SetWindowSize(138, 45);
         }
 
 
@@ -50,7 +50,7 @@ namespace ZombieRush
             Console.WriteLine(sceneBuffer);
         }
 
-        public void UpdateScene(Player player, Map map, Scoreboard scoreboard)
+        public void UpdateScene(Player player, Map map, Scoreboard scoreboard, Timer timer)
         {
             var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
             GetConsoleMode(iStdOut, out uint outConsoleMode);
@@ -61,7 +61,7 @@ namespace ZombieRush
 
             sceneBuffer = "";
             sceneBuffer += "\t\tZOMBIE RUSH\r\n\r\n";
-            sceneBuffer += "\tSUPPLIES: " + player.score + "\tDAYS: "+ player.moves +"\r\n\r\n";
+            sceneBuffer += "\tSUPPLIES: " + player.score + "\tTIME REMAINING: "+ timer.TimeRemaining.ToString("00") +"\r\n\r\n";
             sceneBuffer += "Remaining: ";
             for (int i = 0; i < map.items.Count; i++) sceneBuffer += "* ";
             sceneBuffer += "   ";
@@ -93,8 +93,7 @@ namespace ZombieRush
                 {
                     if (i % 2 == 0)
                     {
-                        sceneBuffer += "\tSupplies: " + scoreboard.scoreboard[boardPosition].score +
-                                        " | Days: " + scoreboard.scoreboard[boardPosition].turns;
+                        sceneBuffer += "\tSupplies: " + scoreboard.scoreboard[boardPosition].score;
                         boardPosition++;
                     }
                     else

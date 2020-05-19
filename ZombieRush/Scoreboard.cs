@@ -18,7 +18,6 @@ namespace ZombieRush
                 {
                     name = "AAA",
                     score = 20,
-                    turns = 0
                 };
                 scoreboard.Add(entry);
 
@@ -26,7 +25,6 @@ namespace ZombieRush
                 {
                     name = "BBB",
                     score = 10,
-                    turns = 0
                 };
                 scoreboard.Add(entry);
 
@@ -34,7 +32,6 @@ namespace ZombieRush
                 {
                     name = "CCC",
                     score = 5,
-                    turns = 0
                 };
                 scoreboard.Add(entry);
             }
@@ -62,7 +59,6 @@ namespace ZombieRush
             Console.Write("Name: ");
             entry.name = Console.ReadLine();
             entry.score = player.score;
-            entry.turns = player.moves;
 
             for (int i=0;i<scoreboard.Count;i++)
             {
@@ -85,7 +81,6 @@ namespace ZombieRush
             {
                 sw.WriteLine(scoreboard[i].name);
                 sw.WriteLine(scoreboard[i].score);
-                sw.WriteLine(scoreboard[i].turns);
             }
             sw.Close();
         }
@@ -102,7 +97,6 @@ namespace ZombieRush
                     scoreboard.Add(new ScoreboardEntry());
                     scoreboard[i].name = sr.ReadLine();
                     scoreboard[i].score = Convert.ToInt32(sr.ReadLine());
-                    scoreboard[i].turns = Convert.ToInt32(sr.ReadLine());
                 }
                 sr.Close();
                 return true;

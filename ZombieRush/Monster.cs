@@ -6,7 +6,7 @@ namespace ZombieRush
 {
     class Monster
     {
-
+        public string tile = "\x1b[31m M \x1b[0m";
         public int x;
         public int y;
         public int previousX;
@@ -14,9 +14,9 @@ namespace ZombieRush
 
         public int upperMapBound;
 
-        public Monster(Map map)
+        public Monster(int BOARD_SIZE)
         {
-            upperMapBound = map.BoardSize;
+            upperMapBound = BOARD_SIZE;
             Random rng = new Random();
             x = rng.Next(0, upperMapBound);
             y = rng.Next(0, upperMapBound);

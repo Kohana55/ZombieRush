@@ -10,7 +10,7 @@ namespace ZombieRush
         public int x;
         public int y;
 
-        public string tile = "\x1b[42m \x1b[33m* \x1b[0m";
+        public string tile = " \x1b[33m*\x1b[0m ";
 
         public Item(int X, int Y)
         {
